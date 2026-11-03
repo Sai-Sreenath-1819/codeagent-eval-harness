@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+
+# Secrets
+.env
+.env.*
+
+# Eval outputs
+runs/
+logs/
+
+# Personal Claude Code overrides
+.claude/settings.local.json
