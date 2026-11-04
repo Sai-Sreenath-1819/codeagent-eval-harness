@@ -9,7 +9,9 @@ Status: pre-alpha. Only the scaffold exists; features land one spec at a time.
 - **A request for a plan means a plan, not code.** Don't write implementation code until the user explicitly says to implement.
 - **No code under `src/` without an Approved spec.** New work starts with `/spec-new`; implementation goes through `/spec-implement` on a spec whose status is `Approved`. Only the user approves specs.
 - Tests are written first, from the spec's acceptance criteria.
-- One branch per spec: `spec/NNN-slug`. Never commit feature work straight to `main`; never merge or push without being asked.
+- **Never push to `main`, and never commit to it.** Always work on a branch (`spec/NNN-slug` for specs, otherwise `docs/…`, `chore/…`, `ci/…`, `fix/…`) and push that branch. The maintainer opens and merges the PR; don't run `gh pr merge` or create the PR unless asked. A hook blocks pushes to `main`, and GitHub branch protection enforces it.
+- Before pushing, run `uv run ruff check`, `uv run ruff format --check`, `uv run pytest` and `uv run pre-commit run --all-files`. CI runs the same, plus a gitleaks scan of the full history, a dependency audit and a PR-title check; the required check is `All checks`.
+- **Never put a credential in a commit, a test, a fixture, a doc or a log.** Use obvious placeholders (`YOUR_API_KEY`). If a secret ever lands in a commit, tell the user to revoke it first; rewriting history does not fix a leak. See `CONTRIBUTING.md` and `SECURITY.md`.
 - Conventional Commits naming the spec, e.g. `feat(diff): regression gate (spec 007)`.
 - Decisions that cut across specs go in `docs/adr/NNNN-title.md`.
 
@@ -26,6 +28,7 @@ runs/           eval outputs (gitignored, written only by the harness)
 ## Commands
 ```bash
 uv sync                              # install / update the env
+uv run pre-commit install            # once: secret scan + ruff + hygiene on every commit
 uv run pytest                        # unit tests (no Docker, no API calls)
 uv run pytest --run-docker -m docker # Docker integration tests
 uv run ruff check && uv run ruff format --check
