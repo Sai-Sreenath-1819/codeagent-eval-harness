@@ -1,6 +1,6 @@
 # 0002 — Pluggable agents behind one protocol
 
-**Status:** Accepted
+**Status:** Accepted, amended by [0004](0004-provider-and-harness-agnostic.md)
 **Date:** 2026-11-02
 
 ## Context
@@ -21,3 +21,6 @@ Adapters:
 - New agents are one adapter file plus a registry entry.
 - Cost accounting differs by source: our own price table for minimal_claude, Claude Code's own `total_cost_usd` for claude_code. The manifest records which source was used.
 - Agents never see the host filesystem. The container is the isolation boundary.
+
+## Amendment (2026-11-03)
+This ADR assumed paid Anthropic API access. [ADR 0004](0004-provider-and-harness-agnostic.md) generalizes it: the minimal agent takes a model from a pluggable provider (including free tiers and local models), Claude Code can authenticate with a subscription token, and a generic command adapter runs any other CLI agent. The `Agent` protocol and the rule that the harness collects the patch are unchanged.

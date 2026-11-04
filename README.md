@@ -27,7 +27,7 @@ exit 1
  │  Sandbox (Docker)   │
  └─────────┬───────────┘
            ▼
- ┌─────────────────────┐   pluggable: minimal Claude tool-use loop │ Claude Code headless
+ ┌─────────────────────┐   pluggable: minimal loop (any model) │ Claude Code │ any CLI agent
  │  Agent              │   records tokens, cost, turns, wall time
  └─────────┬───────────┘
            ▼  git diff vs base commit
@@ -51,6 +51,23 @@ exit 1
 
 Exact definitions and the regression rules are in [specs/000-product.md](specs/000-product.md).
 
+## No paid API credits? That's fine
+The harness is designed so it doesn't depend on any one model provider or agent tool ([ADR 0004](docs/adr/0004-provider-and-harness-agnostic.md)). Planned ways to run it:
+
+| You have | Use |
+|---|---|
+| A local model server (Ollama, LM Studio) | Built-in minimal agent, OpenAI-compatible provider, $0 |
+| A free API tier (Gemini, OpenRouter, Groq and similar) | Built-in minimal agent, OpenAI-compatible provider |
+| A Claude Pro/Max/Team/Enterprise subscription | Claude Code adapter with a token from `claude setup-token` (no API key) |
+| Another agent CLI (Aider, SWE-agent, OpenHands, Codex CLI, Gemini CLI...) | Generic command adapter |
+| An Anthropic or OpenAI API key | Built-in minimal agent, or Claude Code with the key |
+
+Things to know:
+- Small or free models may solve very few of the 50 tasks. The pipeline still works, but scores will be low and noisy.
+- Free tiers and subscriptions have rate or usage limits. Runs are resumable, so a limit stops a run instead of ruining it.
+- When a provider reports no prices or token counts, those columns show "n/a". Tokens per solved task and solved tasks per hour still let you compare runs.
+- Your credentials are visible to the agent's shell inside its container. Prefer scoped, low-limit keys. A subscription token has account-wide scope, so treat it as sensitive.
+
 ## Planned usage
 ```bash
 ceh validate                          # run gold patches once; exclude tasks broken by the environment
@@ -63,7 +80,7 @@ ceh diff <baseline_run> <candidate_run>
 ## Requirements
 - Docker Desktop. On Apple Silicon, turn on **Rosetta for x86/amd64 emulation** and allocate 8+ CPUs, 16 GB+ RAM and about 120 GB of disk. SWE-bench images are x86_64; see [ADR 0001](docs/adr/0001-local-docker-rosetta.md).
 - [uv](https://docs.astral.sh/uv/) and Python 3.11+.
-- `ANTHROPIC_API_KEY` exported in your shell.
+- Something to drive the agent, from the table above: a local model, a free API key, a Claude subscription, or another agent CLI. Credentials go in environment variables that the run config names.
 
 ## Development
 ```bash
