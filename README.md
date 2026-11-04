@@ -104,5 +104,8 @@ This repo is set up for [Claude Code](https://claude.com/claude-code): `CLAUDE.m
   - a block on edits to `.env*`, `uv.lock` and `runs/`
   - a spec-status banner at session start
 
+## Contributing
+All changes go through pull requests: `main` is protected, and a PR needs the `All checks` status to pass (lint, tests, a secret scan of the full history, a dependency audit and a PR-title check). A Claude review bot comments on each PR. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and [SECURITY.md](SECURITY.md) for reporting vulnerabilities or leaked credentials.
+
 ## License
 [MIT](LICENSE)

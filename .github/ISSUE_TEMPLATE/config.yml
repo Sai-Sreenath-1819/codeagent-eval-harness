@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/Sai-Sreenath-1819/codeagent-eval-harness/security/advisories/new
+    about: Please report security problems and leaked credentials privately, not in a public issue.
